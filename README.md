@@ -25,14 +25,15 @@ Requirements
 + Install all the jars from the /jar path into your ColdFusion class path
 + Don’t forget to restart ColdFusion :)
 
-Installation
+Installation / usage
 =========
+
+### Configuration
 
 + Upload pusher.cfc into your webroot.
 + Edit pusher.cfc line 3 to reflect your DBMS type (‘mssql’ or ‘mysql’).
 + Edit pusher.cfc line 4 to set your datasource.
-+ Call the init() function pusher.cfc to create the neccesary database table:
-
++ Call the init() function to create the neccesary database table and pass the neccesary information about the certificates.
 ```cf
 <cfset pusher = createObject("component","pusher").init(
           mode = "development",
@@ -41,4 +42,25 @@ Installation
           googleAPIKey = "xxxxxxxxxxxxxxxxxxxxxxxx"
 )/>
 ```
+
+### Registering devices
+
+```cf
+<!-- Example 1: Register an anonymous Apple Device --->
+ 
+http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
+ 
+<!-- Example 2: Register an anonymous Android Device --->
+ 
+http://localhost/pusher.cfc?method=registerDevice&deviceType=android&token=xxxxx
+ 
+<!-- Example 3: Register an userID with an Apple Device (Same goes for Android) --->
+ 
+http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx&userID=123
+```
+
+
+
+
+
 
