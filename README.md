@@ -46,7 +46,7 @@ Installation / usage
 
 ### Registering devices
 You configure your Android and/or iOS app to get the device token and send it to Pusher. Registering devices can be done anonymously, or a device can be connected to a user ID in your database:
-```html
+```
 <!-- Example 1: Register an anonymous Apple Device --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
  
@@ -61,7 +61,7 @@ These methods will return a simple JSON boolean to indicate the result.
 ### Sending messages
 
 Messages can be sent to specific devices, or broadcasted to all devices:
-```
+```cfm
 <!--- Example 1: Broadcast a message to all your users --->
 <cfset pusher.broadcastMessage(message = "Hello to all my users!")/>
  
