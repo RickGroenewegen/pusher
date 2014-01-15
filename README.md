@@ -58,7 +58,7 @@ http://localhost/pusher.cfc?method=registerDevice&deviceType=android&token=xxxxx
 <!-- Example 3: Register an userID with an Apple Device (Same goes for Android) --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx&userID=123
 ```
-
+These methods will return a simple JSON boolean to indicate the result.
 
 
 
