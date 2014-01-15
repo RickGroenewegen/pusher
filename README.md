@@ -48,17 +48,14 @@ Installation / usage
 
 Registering devices can be done anonymously, or a device can be connected to a user ID in your database.
 
-```cfm
+```html
 <!-- Example 1: Register an anonymous Apple Device --->
- 
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
  
 <!-- Example 2: Register an anonymous Android Device --->
- 
 http://localhost/pusher.cfc?method=registerDevice&deviceType=android&token=xxxxx
  
 <!-- Example 3: Register an userID with an Apple Device (Same goes for Android) --->
- 
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx&userID=123
 ```
 
