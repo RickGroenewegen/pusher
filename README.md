@@ -45,7 +45,7 @@ Installation / usage
 
 ### Registering devices
 
-```cf
+```cfm
 <!-- Example 1: Register an anonymous Apple Device --->
  
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
