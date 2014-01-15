@@ -61,7 +61,7 @@ These methods will return a simple JSON boolean to indicate the result.
 ### Sending messages
 
 Messages can be sent to specific devices, or broadcasted to all devices:
-```cfm
+```
 <!--- Example 1: Broadcast a message to all your users --->
 <cfset pusher.broadcastMessage(message = "Hello to all my users!")/>
  
