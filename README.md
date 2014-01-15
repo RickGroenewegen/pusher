@@ -1,7 +1,8 @@
 Pusher
 ======
 
-A Coldfusion component for sending push notifications to iOS and Android. 
+A Coldfusion component for sending push notifications to iOS and Android without the use of external webservices.
+
 Features
 =========
 
