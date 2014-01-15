@@ -46,6 +46,8 @@ Installation / usage
 
 ### Registering devices
 
+Registering devices can be done anonymously, or a device can be connected to a user ID in your database.
+
 ```cfm
 <!-- Example 1: Register an anonymous Apple Device --->
  
