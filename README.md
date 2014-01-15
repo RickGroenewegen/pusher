@@ -11,7 +11,8 @@ Features
 + Broadcast notifications to all your users
 + Send push notifications to a specific user
 + Handle the removal of inactive devices.
-+ iOS: Supports for both sandbox and production mode
++ iOS: Support for both sandbox and production mode
++ iOS: Support for app icon badges
 + Android: New canonical registration ID support
 + Supported DBMS: MS SQL, MySQL
 
