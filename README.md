@@ -84,7 +84,7 @@ Best practice would be to implement this in a scheduled task.
 
 Credits
 =========
-This library makes use of java-apns, a Java client for the Apple Push Notification Servce. 
+Pusher relies on java-apns, a Java client for the Apple Push Notification Servce. 
 
 https://github.com/notnoop/java-apns
 
