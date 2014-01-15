@@ -1,6 +1,6 @@
 <cfcomponent>
 
-	<cfset variables.dbtype = "mssql"/> <!--- Data source as registered in the ColdFusion administrator --->
+	<cfset variables.dbtype = "mssql"/> <!--- DBMS type ('mysql' or 'mssql') --->
 	<cfset variables.datasource = "my_datasource"/> <!--- Data source as registered in the ColdFusion administrator --->
 	<cfset variables.tablename = "pushdevices"/> <!--- Table name that is used in de database --->
 	<cfset variables.applePushService = ""/>
@@ -216,7 +216,7 @@
 		<!--- Send the payload --->
 		<cfset result = variables.androidPushService.send(payload, arguments.token, 5)/>
 					
-		<!--- Check if the user has a new canonical registration ID, if so: Replace it --->			
+		<!--- Check if the user has a new canonical registration ID, if so: replace it --->			
 		<cfif NOT isNull(result.getCanonicalRegistrationId())>
 			<cfquery result="qUpdateDevice" datasource="#variables.datasource#">
 				UPDATE		#variables.tablename#
