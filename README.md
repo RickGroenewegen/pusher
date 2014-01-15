@@ -34,7 +34,8 @@ Installation / usage
 + Edit pusher.cfc line 3 to reflect your DBMS type (‘mssql’ or ‘mysql’).
 + Edit pusher.cfc line 4 to set your datasource.
 + Call the init() function to create the neccesary database table and pass the neccesary information about the certificates.
-```cf
+
+```cfm
 <cfset pusher = createObject("component","pusher").init(
           mode = "development",
           appleCertificatePath = "C:\certificates\my.p12",
