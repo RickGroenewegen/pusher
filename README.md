@@ -1,7 +1,9 @@
 Pusher
 ======
 
-A Coldfusion component for sending push notifications to iOS and Android without the use of external webservices.
+A Coldfusion component for sending push notifications to iOS and Android. 
+
+This component will send push notifications directly to Apple Push Notification Service (APNS) and Google Cloud Messaging (GCM) without the use of any 3rd pary (web)service.
 
 Features
 =========
@@ -85,7 +87,7 @@ Best practice would be to implement this in a scheduled task.
 
 Credits
 =========
-Pusher relies on java-apns, a Java client for the Apple Push Notification Servce. 
+Pusher relies on java-apns, a Java client for the Apple Push Notification Service. 
 
 https://github.com/notnoop/java-apns
 Support
