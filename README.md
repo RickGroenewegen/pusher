@@ -87,7 +87,6 @@ Credits
 Pusher relies on java-apns, a Java client for the Apple Push Notification Servce. 
 
 https://github.com/notnoop/java-apns
-
 Support
 =======
 If you have any questions, feel free to contact me.
