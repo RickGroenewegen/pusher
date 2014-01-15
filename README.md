@@ -45,7 +45,7 @@ Installation / usage
 ```
 
 ### Registering devices
-Registering devices can be done anonymously, or a device can be connected to a user ID in your database:
+You configure your Android and/or iOS app to get the device token and send it to Pusher. Registering devices can be done anonymously, or a device can be connected to a user ID in your database:
 ```html
 <!-- Example 1: Register an anonymous Apple Device --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
