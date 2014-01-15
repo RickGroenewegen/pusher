@@ -3,7 +3,7 @@ Pusher
 
 A Coldfusion component for sending push notifications to iOS and Android. 
 
-This component will send push notifications directly to Apple Push Notification Service (APNS) and Google Cloud Messaging (GCM) without the use of any 3rd pary (web)service.
+This component will send push notifications directly to Apple Push Notification Service (APNS) and Google Cloud Messaging (GCM) without the use of any 3rd party (web)service.
 
 Features
 =========
