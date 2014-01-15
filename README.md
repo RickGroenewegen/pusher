@@ -33,7 +33,12 @@ Installation
 + Edit pusher.cfc line 4 to set your datasource.
 + Call the init() function pusher.cfc to create the neccesary database table:
 
-```coldfusion
-<cfset testje = 1/>
+```cf
+<cfset pusher = createObject("component","pusher").init(
+          mode = "development",
+          appleCertificatePath = "C:\certificates\my.p12",
+          appleCertificatePassword = "myPassword",
+          googleAPIKey = "xxxxxxxxxxxxxxxxxxxxxxxx"
+)/>
 ```
 
