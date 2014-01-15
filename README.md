@@ -79,7 +79,21 @@ Pusher automatically handles inactive Android devices since we get immediate fee
 <!--- Example: Clean inactive apple devices --->
 <cfset pusher.handleInactiveAppleDevices()/>
 ```
+Best practice would be to implement this in a scheduled task.
 
+Credits
+=========
+This library makes use of java-apns, a Java client for the Apple Push Notification Servce. 
+
+https://github.com/notnoop/java-apns
+
+Support
+=======
+If you have any questions, feel free to contact me.
+
+Rick Groenewegen
+
+rick@aanzee.nl
 
 
 
