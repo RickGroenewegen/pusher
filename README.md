@@ -25,5 +25,20 @@ Requirements
 + Install all the jars from the /jar path into your ColdFusion class path
 + Don’t forget to restart ColdFusion :)
 
+Installation
+=========
 
++ Upload pusher.cfc into your webroot.
++ Edit pusher.cfc line 3 to reflect your DBMS type (‘mssql’ or ‘mysql’).
++ Edit pusher.cfc line 4 to set your datasource.
++ Call the init() function pusher.cfc to create the neccesary database table:
+
+'''cf
+<cfset pusher = createObject("component","pusher").init(
+          mode = "development",
+          appleCertificatePath = "C:\certificates\my.p12",
+          appleCertificatePassword = "myPassword",
+          googleAPIKey = "xxxxxxxxxxxxxxxxxxxxxxxx"
+)/>
+'''
 
