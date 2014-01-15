@@ -20,7 +20,7 @@ Requirements
 
 + ColdFusion 8 or higher or Railo 3.x or higher.
 + A MySQL or MS SQL database.
-+ An Apple SSL Push certificate (See [Nesta CMS](http://effectif.com/nesta "this") excellent blog by Raymond Camden on how to generate it). This should be a file with a .p12 file extention. Be sure to remember the .p12 password you choose. You will need it later on.
++ An Apple SSL Push certificate (See [this excellent blog](http://www.raymondcamden.com/index.cfm/2010/9/13/Guest-Post-Apple-Push-Notifications-From-ColdFusion-in-Ten-Minutes-or-Less) by Raymond Camden on how to generate it). This should be a file with a .p12 file extention. Be sure to remember the .p12 password you choose. You will need it later on.
 Your Google GCM API key (See this post).
 Download the java-apns jar’s with dependencies and move them into your ColdFusion class path.
 Download gcm-server.jar and move it into your ColdFusion class path.
