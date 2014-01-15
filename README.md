@@ -33,7 +33,7 @@ Installation
 + Edit pusher.cfc line 4 to set your datasource.
 + Call the init() function pusher.cfc to create the neccesary database table:
 
-```cf
+```coldfusion
 <cfset testje = 1/>
 ```
 
