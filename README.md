@@ -26,7 +26,7 @@ Requirements
 + A MySQL or MS SQL database
 + An Apple SSL Push certificate (See [this excellent blog](http://www.raymondcamden.com/index.cfm/2010/9/13/Guest-Post-Apple-Push-Notifications-From-ColdFusion-in-Ten-Minutes-or-Less) by Raymond Camden on how to generate it)
 + Your Google GCM API key (See this post)
-+ Install all the jars from the /jar path into your ColdFusion class path
++ Install the jar from the /jar path into your ColdFusion class path
 + Don’t forget to restart ColdFusion :)
 
 Installation / usage
