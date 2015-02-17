@@ -5,19 +5,19 @@
 	<cfset variables.tablename = "pushdevices"/> <!--- Table name that is used in de database --->
 	<cfset variables.applePushService = ""/>
 	<cfset variables.androidPushService = ""/>
-	
-	<cffunction name="init" returntype="any">	
-		
-		<cfargument name="mode" type="string" required="true" default="development"/>		
+
+	<cffunction name="init" returntype="any">
+
+		<cfargument name="mode" type="string" required="true" default="development"/>
 		<cfargument name="appleCertificatePath" type="string" required="false" default=""/>
 		<cfargument name="appleCertificatePassword" type="string" required="false" default=""/>
 		<cfargument name="googleAPIKey" type="string" required="false" default=""/>
-		
+
 		<cfset var pushService = ""/>
 		<cfset var qCreate = ""/>
 
 		<!--- Check if the P12 certificate and password was provided --->
-		<cfif len(arguments.appleCertificatePath) AND len(appleCertificatePassword)>			
+		<cfif len(arguments.appleCertificatePath) AND len(appleCertificatePassword)>
 			<cfset pushService = createObject("java","com.notnoop.apns.APNS").newService().withCert(arguments.appleCertificatePath,arguments.appleCertificatePassword)/>
 			<cfif arguments.mode EQ "development">
 				<cfset variables.applePushService = pushService.withSandboxDestination().build() />
@@ -26,17 +26,17 @@
 			</cfif>
 		</cfif>
 
-		<!--- Check if the Google API key was provided --->		
+		<!--- Check if the Google API key was provided --->
 		<cfif len(arguments.googleAPIKey)>
 			<cfset variables.androidPushService = createObject( "java","com.google.android.gcm.server.Sender").init(arguments.googleAPIKey)/>
 		</cfif>
 
-		<!--- Try to create the device table. Currently a try/catch to support as many DBMS's as possible --->	
-		<cfif variables.dbtype EQ "mysql">		
+		<!--- Try to create the device table. Currently a try/catch to support as many DBMS's as possible --->
+		<cfif variables.dbtype EQ "mssql">
 			<!--- Create the MySQL table if it doesn't exist --->
 			<cfquery result="qCreate" datasource="#variables.datasource#">
-				IF NOT EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[#variables.tablename#]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)	
-				CREATE TABLE [dbo].[#variables.tablename#] 
+				IF NOT EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[#variables.tablename#]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
+				CREATE TABLE [dbo].[#variables.tablename#]
 				(
 					id INT IDENTITY(1,1) NOT NULL,
 					userID INTEGER,
@@ -44,7 +44,7 @@
 					token VARCHAR(500)
 				)
 			</cfquery>
-		<cfelseif variables.dbtype EQ "mssql">
+		<cfelseif variables.dbtype EQ "mysql">
 			<!--- Create the MSSQL table if it doesn't exist --->
 			<cfquery result="qCreate" datasource="#variables.datasource#">
 				CREATE TABLE IF NOT EXISTS #variables.tablename#
@@ -63,10 +63,10 @@
 
 	<cffunction name="registerDevice" access="remote" returntype="boolean" returnformat="JSON">
 
-		<cfargument name="deviceType" type="string" required="true"/>		
-		<cfargument name="token" type="string" required="true"/>		
-		<cfargument name="userID" type="numeric" required="false" default="0"/>		
-	
+		<cfargument name="deviceType" type="string" required="true"/>
+		<cfargument name="token" type="string" required="true"/>
+		<cfargument name="userID" type="numeric" required="false" default="0"/>
+
 		<cfset var qDevice = ""/>
 		<cfset var qInsertDevice = ""/>
 		<cfset var qUpdateDevice = ""/>
@@ -75,7 +75,7 @@
 		<cfif NOT listFindNoCase("android,apple",arguments.deviceType)>
 			<cfthrow message="Invalid device type: #arguments.deviceType#"/>
 		</cfif>
-		
+
 		<!--- See if the device is already present --->
 		<cfquery name="qDevice" datasource="#variables.datasource#">
 			SELECT	id
@@ -91,34 +91,34 @@
 		<cfif NOT qDevice.recordcount>
 			<!--- Device is not present: Create it --->
 			<cfquery result="qInsertDevice" datasource="#variables.datasource#">
-				INSERT INTO #variables.tablename# 	(	
+				INSERT INTO #variables.tablename# 	(
 														userID,
 														deviceType,
 														token
-													) 
+													)
 				VALUES 								(
 														<cfqueryparam value="#userID#" cfsqltype="cf_sql_numeric"/>,
 														<cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>,
 														<cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
 													)
-			</cfquery>			
+			</cfquery>
 		<cfelse>
 			<!--- Device is present: Update it --->
 			<cfquery result="qUpdateDevice" datasource="#variables.datasource#">
-				UPDATE	#variables.tablename# 	
+				UPDATE	#variables.tablename#
 				SET		token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
 				WHERE	id = <cfqueryparam value="#qDevice.id#" cfsqltype="cf_sql_numeric"/>
-			</cfquery>		
+			</cfquery>
 		</cfif>
-		
+
 		<cfreturn true/>
 
 	</cffunction>
 
 	<cffunction name="broadcastMessage" returntype="boolean">
-		
+
 		<cfargument name="message" type="string" required="true"/>
-	
+
 		<cfset var qTokens = ""/>
 
 		<!--- Get all the device tokens from the database --->
@@ -126,26 +126,26 @@
 			SELECT		id,deviceType,token
 			FROM		#variables.tablename#
 		</cfquery>
-		
+
 		<!--- Send a message to all the tokens --->
-		<cfloop query="qTokens">				
-			<cfif qTokens.deviceType EQ "apple">		
+		<cfloop query="qTokens">
+			<cfif qTokens.deviceType EQ "apple">
 				<cfset this.sendMessageToApple(qTokens.token,arguments.message)/>
-			<cfelseif qTokens.deviceType EQ "android">		
+			<cfelseif qTokens.deviceType EQ "android">
 				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message)/>
 			</cfif>
 		</cfloop>
-		
+
 		<cfreturn true/>
 
 	</cffunction>
 
 	<cffunction name="sendMessage" returntype="boolean">
-		
+
 		<cfargument name="userID" type="numeric" required="true"/>
 		<cfargument name="message" type="string" required="true"/>
 		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/> <!--- iOS only: Sets the badge counter on the app icon --->
-			
+
 		<cfset var qTokens = ""/>
 		<cfset var payload = ""/>
 
@@ -155,12 +155,12 @@
 			FROM		#variables.tablename#
 			WHERE		userID = <cfqueryparam value="#arguments.userID#" cfsqltype="cf_sql_numeric"/>
 		</cfquery>
-				
+
 		<!--- Send a message to all the registered devices of this user --->
-		<cfloop query="qTokens">				
-			<cfif qTokens.deviceType EQ "apple">		
+		<cfloop query="qTokens">
+			<cfif qTokens.deviceType EQ "apple">
 				<cfset this.sendMessageToApple(qTokens.token,arguments.message)/>
-			<cfelseif qTokens.deviceType EQ "android">		
+			<cfelseif qTokens.deviceType EQ "android">
 				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message)/>
 			</cfif>
 		</cfloop>
@@ -170,11 +170,11 @@
 	</cffunction>
 
 	<cffunction name="sendMessageToApple" returntype="void">
-		
+
 		<cfargument name="token" type="string" required="true"/>
 		<cfargument name="message" type="string" required="true"/>
-		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/> 
-	
+		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/>
+
 		<cfset var payload = ""/>
 
 		<!--- Check if the push service was created during init() --->
@@ -190,16 +190,16 @@
 			.build()/>
 
 		<!--- Send the payload --->
-		<cfset variables.applePushService.push(arguments.token, payload)/>	
+		<cfset variables.applePushService.push(arguments.token, payload)/>
 
 	</cffunction>
 
 	<cffunction name="sendMessageToAndroid" returntype="void">
-		
+
 		<cfargument name="tokenID" type="string" required="true"/>
 		<cfargument name="token" type="string" required="true"/>
 		<cfargument name="message" type="string" required="true"/>
-		
+
 		<cfset var payload = ""/>
 		<cfset var result = ""/>
 		<cfset var qUpdateDevice = ""/>
@@ -211,17 +211,17 @@
 		</cfif>
 
 		<!--- Build a message --->
-		<cfset payload = createObject( "java","com.google.android.gcm.server.Message$Builder").addData("message",arguments.message).build()/>			
-		
+		<cfset payload = createObject( "java","com.google.android.gcm.server.Message$Builder").addData("message",arguments.message).build()/>
+
 		<!--- Send the payload --->
 		<cfset result = variables.androidPushService.send(payload, arguments.token, 5)/>
-					
-		<!--- Check if the user has a new canonical registration ID, if so: replace it --->			
-		<cfif NOT isNull(result.getCanonicalRegistrationId())>
+
+		<!--- Check if the user has a new canonical registration ID, if so: replace it --->
+		<cfif len(result.getCanonicalRegistrationId())>
 			<cfquery result="qUpdateDevice" datasource="#variables.datasource#">
 				UPDATE		#variables.tablename#
 				SET			token = <cfqueryparam value="#result.getCanonicalRegistrationId()#" cfsqltype="cf_sql_varchar" />
-				WHERE		id = <cfqueryparam value="#arguments.tokenID#" cfsqltype="cf_sql_numeric"/>								
+				WHERE		id = <cfqueryparam value="#arguments.tokenID#" cfsqltype="cf_sql_numeric"/>
 			</cfquery>
 		</cfif>
 
@@ -229,14 +229,14 @@
 		<cfif result.getErrorCodeName() EQ "NotRegistered">
 			<cfquery result="qDeleteDevice" datasource="#variables.datasource#">
 				DELETE FROM	#variables.tablename#
-				WHERE		id = <cfqueryparam value="#arguments.tokenID#" cfsqltype="cf_sql_numeric"/>						
+				WHERE		id = <cfqueryparam value="#arguments.tokenID#" cfsqltype="cf_sql_numeric"/>
 			</cfquery>
 		</cfif>
 
 	</cffunction>
 
-	<cffunction name="handleInactiveAppleDevices" returntype="void">	
-		
+	<cffunction name="handleInactiveAppleDevices" returntype="void">
+
 		<!--- Get all the inactive devices --->
 		<cfset var inactiveDevices = variables.applePushService.getInactiveDevices()/>
 		<cfset var deviceToken = "" />
@@ -245,12 +245,12 @@
 		<!--- Loop over the device collection and remove the from the table --->
 		<cfloop collection="#inactiveDevices#" item="deviceToken">
 			<cfquery name="qDeleteDeviceToken" datasource="#variables.datasource#">
-				DELETE FROM 	devicetokens 
-				WHERE 			token = <cfqueryparam value="#deviceToken#" cfsqltype="cf_sql_varchar"/> 
+				DELETE FROM 	devicetokens
+				WHERE 			token = <cfqueryparam value="#deviceToken#" cfsqltype="cf_sql_varchar"/>
 				AND 			deviceType = 'apple'
 			</cfquery>
 		</cfloop>
-		
+
 	</cffunction>
 
 </cfcomponent>
