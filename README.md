@@ -1,7 +1,7 @@
 Pusher
 ======
 
-A Coldfusion component for sending push notifications to iOS and Android. 
+A Coldfusion component for sending push notifications to iOS and Android.
 
 This component will send push notifications directly to Apple Push Notification Service (APNS) and Google Cloud Messaging (GCM) without the use of any 3rd party (web)service.
 
@@ -37,10 +37,10 @@ Installation / usage
 + Upload pusher.cfc into your webroot.
 + Edit pusher.cfc line 3 to reflect your DBMS type (‘mssql’ or ‘mysql’).
 + Edit pusher.cfc line 4 to set your datasource.
-+ Call the init() function to create the neccesary database table and pass the neccesary information about the certificates.
++ Call the init() function to create the neccesary database table and pass the neccesary information about the certificates. Avoid having to call the init() function multiple times by creating the object in the application scope. This way the connection with the APNS should last as long as the application lifespan.
 
 ```cfm
-<cfset pusher = createObject("component","pusher").init(
+<cfset application.pusher = createObject("component","pusher").init(
           mode = "development",
           appleCertificatePath = "C:\certificates\my.p12",
           appleCertificatePassword = "myPassword",
@@ -53,10 +53,10 @@ You configure your Android and/or iOS app to get the device token and send it to
 ```
 <!-- Example 1: Register an anonymous Apple Device --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
- 
+
 <!-- Example 2: Register an anonymous Android Device --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=android&token=xxxxx
- 
+
 <!-- Example 3: Register an userID with an Apple Device (Same goes for Android) --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx&userID=123
 ```
@@ -67,13 +67,13 @@ These methods will return a simple JSON boolean to indicate the result.
 Messages can be sent to specific devices, or broadcasted to all devices:
 ```cfm
 <!--- Example 1: Broadcast a message to all your users --->
-<cfset pusher.broadcastMessage(message = "Hello to all my users!")/>
- 
+<cfset application.pusher.broadcastMessage(message = "Hello to all my users!")/>
+
 <!--- Example 2: Broadcast a message to a specific user --->
-<cfset pusher.sendMessage(userID = 123, message = "Hello there!")/>
- 
+<cfset application.pusher.sendMessage(userID = 123, message = "Hello there!")/>
+
 <!--- Example 3: Broadcast a message to a specific user with a badge counter update --->
-<cfset pusher.sendMessage(userID = 123, message = "Hello there!", badgeTotal = 3)/>
+<cfset application.pusher.sendMessage(userID = 123, message = "Hello there!", badgeTotal = 3)/>
 ```
 
 ### Handling inactive devices
@@ -81,13 +81,13 @@ Messages can be sent to specific devices, or broadcasted to all devices:
 Pusher automatically handles inactive Android devices since we get immediate feedback about the device status after sending a message. Apple push notifications do not work this way. To handle inactive Apple devices you need to call the 'handleInactiveAppleDevices' function. This will retrieve a list of all inactive devices from Apple and remove them from your device table:
 ```cfm
 <!--- Example: Clean inactive apple devices --->
-<cfset pusher.handleInactiveAppleDevices()/>
+<cfset application.pusher.handleInactiveAppleDevices()/>
 ```
 Best practice would be to implement this in a scheduled task.
 
 Credits
 =========
-Pusher relies on java-apns, a Java client for the Apple Push Notification Service. 
+Pusher relies on java-apns, a Java client for the Apple Push Notification Service.
 
 https://github.com/notnoop/java-apns
 Support
