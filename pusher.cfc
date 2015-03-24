@@ -82,10 +82,7 @@
 			FROM	#variables.tablename#
 			WHERE	#variables.tablename#.deviceType = <cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>
 			<cfif arguments.userID EQ 0>
-				AND #variables.tablename#.token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
-			<cfelse>
-				AND	#variables.tablename#.userID = <cfqueryparam value="#arguments.userID#" cfsqltype="cf_sql_numeric"/>
-			</cfif>
+			AND #variables.tablename#.token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
 		</cfquery>
 
 		<cfif NOT qDevice.recordcount>
@@ -103,11 +100,11 @@
 													)
 			</cfquery>
 		<cfelse>
-			<!--- Device is present: Update it --->
+			<!--- Device is present: Update it. For example when a user is logged out from account A and logged in account B we need to update it --->
 			<cfquery result="qUpdateDevice" datasource="#variables.datasource#">
 				UPDATE	#variables.tablename#
-				SET		token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
-				WHERE	id = <cfqueryparam value="#qDevice.id#" cfsqltype="cf_sql_numeric"/>
+				SET		userID = <cfqueryparam value="#arguments.userID#" cfsqltype="cf_sql_numeric"/>
+				WHERE	token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
 			</cfquery>
 		</cfif>
 
@@ -118,6 +115,7 @@
 	<cffunction name="broadcastMessage" returntype="boolean">
 
 		<cfargument name="message" type="string" required="true"/>
+		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/> <!--- iOS only: Sets the badge counter on the app icon --->
 
 		<cfset var qTokens = ""/>
 
@@ -130,7 +128,7 @@
 		<!--- Send a message to all the tokens --->
 		<cfloop query="qTokens">
 			<cfif qTokens.deviceType EQ "apple">
-				<cfset this.sendMessageToApple(qTokens.token,arguments.message)/>
+				<cfset this.sendMessageToApple(qTokens.token,arguments.message,arguments.badgeTotal)/>
 			<cfelseif qTokens.deviceType EQ "android">
 				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message)/>
 			</cfif>
@@ -159,7 +157,7 @@
 		<!--- Send a message to all the registered devices of this user --->
 		<cfloop query="qTokens">
 			<cfif qTokens.deviceType EQ "apple">
-				<cfset this.sendMessageToApple(qTokens.token,arguments.message)/>
+				<cfset this.sendMessageToApple(qTokens.token,arguments.message,arguments.badgeTotal)/>
 			<cfelseif qTokens.deviceType EQ "android">
 				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message)/>
 			</cfif>
