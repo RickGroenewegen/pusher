@@ -112,6 +112,70 @@
 
 	</cffunction>
 
+	<cffunction name="unregisterDeviceToken" access="remote" returntype="boolean" returnformat="JSON">
+		
+		<cfargument name="token" type="string" required="true"/><!---The token (or address) of the mobile device --->
+		<cfargument name="deviceType" type="string" required="true"/><!--- Device types are "apple" or "android" --->
+
+		<cfset variables.result = false>
+
+		<!--- See if the device exist --->
+		<cfquery name="qDevice" datasource="#variables.datasource#">
+			SELECT	id
+			FROM	#variables.tablename#
+			WHERE	#variables.tablename#.deviceType = <cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>
+			AND #variables.tablename#.token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
+		</cfquery>
+
+		<cfif NOT qDevice.recordcount><!--- Device doesnt exist --->
+			
+			<cfset variables.result = false>
+		
+		<cfelse>
+			
+			<cfquery result="qDeleteDeviceToken" datasource="#variables.datasource#"> <!---Delete the token --->
+				DELETE FROM #variables.tablename#
+				WHERE deviceType =  <cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>
+				AND token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
+			</cfquery>
+
+			<cfset variables.result = true>
+		</cfif>
+
+		<cfreturn variables.result/>
+
+	</cffunction>
+	
+	<cffunction name="unregisterUser" access="remote" returntype="boolean" returnformat="JSON"><!---Unregister all user's devices --->
+		
+		<cfargument name="userID" type="string" required="true"/><!---The userID of the user --->
+
+		<cfset variables.result = false>
+
+		<!--- See if devices exists for that user --->
+		<cfquery name="qDevice" datasource="#variables.datasource#">
+			SELECT	id
+			FROM	#variables.tablename#
+			WHERE	userID = #arguments.userID#
+		</cfquery>
+
+		<cfif qDevice.recordcount lt 1><!--- Devices for that user doesnt exist --->
+			
+			<cfset variables.result = false>
+		
+		<cfelse>
+			
+			<cfquery result="qDeleteDeviceToken" datasource="#variables.datasource#"> <!---Delete the tokens assigned to the user --->
+				DELETE FROM #variables.tablename#
+				WHERE userID = #arguments.userID#
+			</cfquery>
+
+			<cfset variables.result = true>
+		</cfif>
+
+		<cfreturn variables.result/>
+	</cffunction>
+	
 	<cffunction name="broadcastMessage" returntype="boolean">
 
 		<cfargument name="message" type="string" required="true"/>

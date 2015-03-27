@@ -8,7 +8,7 @@ This component will send push notifications directly to Apple Push Notification 
 Features
 =========
 
-+ Device registration
++ Device registration/unregistration
 + Multiple devices per user (Also cross-platform)
 + Connect a device to a specific user ID in your database (optional)
 + Broadcast notifications to all your users
