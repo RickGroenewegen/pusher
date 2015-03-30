@@ -113,7 +113,7 @@
 	</cffunction>
 
 	<cffunction name="unregisterDeviceToken" access="remote" returntype="boolean" returnformat="JSON">
-		
+
 		<cfargument name="token" type="string" required="true"/><!---The token (or address) of the mobile device --->
 		<cfargument name="deviceType" type="string" required="true"/><!--- Device types are "apple" or "android" --->
 
@@ -128,11 +128,11 @@
 		</cfquery>
 
 		<cfif NOT qDevice.recordcount><!--- Device doesnt exist --->
-			
+
 			<cfset variables.result = false>
-		
+
 		<cfelse>
-			
+
 			<cfquery result="qDeleteDeviceToken" datasource="#variables.datasource#"> <!---Delete the token --->
 				DELETE FROM #variables.tablename#
 				WHERE deviceType =  <cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>
@@ -145,9 +145,9 @@
 		<cfreturn variables.result/>
 
 	</cffunction>
-	
+
 	<cffunction name="unregisterUser" access="remote" returntype="boolean" returnformat="JSON"><!---Unregister all user's devices --->
-		
+
 		<cfargument name="userID" type="string" required="true"/><!---The userID of the user --->
 
 		<cfset variables.result = false>
@@ -160,11 +160,11 @@
 		</cfquery>
 
 		<cfif qDevice.recordcount lt 1><!--- Devices for that user doesnt exist --->
-			
+
 			<cfset variables.result = false>
-		
+
 		<cfelse>
-			
+
 			<cfquery result="qDeleteDeviceToken" datasource="#variables.datasource#"> <!---Delete the tokens assigned to the user --->
 				DELETE FROM #variables.tablename#
 				WHERE userID = #arguments.userID#
@@ -175,7 +175,7 @@
 
 		<cfreturn variables.result/>
 	</cffunction>
-	
+
 	<cffunction name="broadcastMessage" returntype="boolean">
 
 		<cfargument name="message" type="string" required="true"/>
@@ -307,7 +307,7 @@
 		<!--- Loop over the device collection and remove the from the table --->
 		<cfloop collection="#inactiveDevices#" item="deviceToken">
 			<cfquery name="qDeleteDeviceToken" datasource="#variables.datasource#">
-				DELETE FROM 	devicetokens
+				DELETE FROM 	#variables.tablename#
 				WHERE 			token = <cfqueryparam value="#deviceToken#" cfsqltype="cf_sql_varchar"/>
 				AND 			deviceType = 'apple'
 			</cfquery>
