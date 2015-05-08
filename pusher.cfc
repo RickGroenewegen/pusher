@@ -82,7 +82,8 @@
 			FROM	#variables.tablename#
 			WHERE	#variables.tablename#.deviceType = <cfqueryparam value="#arguments.deviceType#" cfsqltype="cf_sql_varchar"/>
 			<cfif arguments.userID EQ 0>
-			AND #variables.tablename#.token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
+				AND #variables.tablename#.token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar"/>
+			</cfif>
 		</cfquery>
 
 		<cfif NOT qDevice.recordcount>
