@@ -181,6 +181,7 @@
 
 		<cfargument name="message" type="string" required="true"/>
 		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/> <!--- iOS only: Sets the badge counter on the app icon --->
+		<cfargument name="data" type="struct" required="false" default="#structNew()#"/> <!--- Android only: Includes extra data in the message --->
 
 		<cfset var qTokens = ""/>
 
@@ -195,7 +196,7 @@
 			<cfif qTokens.deviceType EQ "apple">
 				<cfset this.sendMessageToApple(qTokens.token,arguments.message,arguments.badgeTotal)/>
 			<cfelseif qTokens.deviceType EQ "android">
-				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message)/>
+				<cfset this.sendMessageToAndroid(qTokens.id,qTokens.token,arguments.message,arguments.data)/>
 			</cfif>
 		</cfloop>
 
@@ -208,6 +209,7 @@
 		<cfargument name="userID" type="numeric" required="true"/>
 		<cfargument name="message" type="string" required="true"/>
 		<cfargument name="badgeTotal" type="numeric" required="false" default="0"/> <!--- iOS only: Sets the badge counter on the app icon --->
+		<cfargument name="data" type="struct" required="false" default="#structNew()#"/> <!--- Android only: Includes extra data in the message --->
 
 		<cfset var qTokens = ""/>
 		<cfset var payload = ""/>
@@ -262,6 +264,7 @@
 		<cfargument name="tokenID" type="string" required="true"/>
 		<cfargument name="token" type="string" required="true"/>
 		<cfargument name="message" type="string" required="true"/>
+		<cfargument name="data" type="struct" required="false" default="#structNew()#"/>
 
 		<cfset var payload = ""/>
 		<cfset var result = ""/>
@@ -274,7 +277,18 @@
 		</cfif>
 
 		<!--- Build a message --->
-		<cfset payload = createObject( "java","com.google.android.gcm.server.Message$Builder").addData("message",arguments.message).build()/>
+		<cfset payload = createObject( "java","com.google.android.gcm.server.Message$Builder").addData("message",arguments.message)/>
+
+		<!--- Check if custom data has been passed --->
+		<cfif NOT structIsEmpty(arguments.data)>
+			<!--- If so, add all the struct elements to the payload --->
+			<cfloop collection="#arguments.data#" item="key">
+				<cfset payload.addData(key, arguments.data[key])/>
+			</cfloop>
+		</cfif>
+
+		<!--- Build the payload --->
+		<cfset payload = payload.build()/>
 
 		<!--- Send the payload --->
 		<cfset result = variables.androidPushService.send(payload, arguments.token, 5)/>

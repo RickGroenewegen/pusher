@@ -50,6 +50,7 @@ Installation / usage
 
 ### Registering devices
 You configure your Android and/or iOS app to get the device token and send it to Pusher. Registering devices can be done anonymously, or a device can be connected to a user ID in your database:
+
 ```
 <!-- Example 1: Register an anonymous Apple Device --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx
@@ -60,11 +61,13 @@ http://localhost/pusher.cfc?method=registerDevice&deviceType=android&token=xxxxx
 <!-- Example 3: Register an userID with an Apple Device (Same goes for Android) --->
 http://localhost/pusher.cfc?method=registerDevice&deviceType=apple&token=xxxxx&userID=123
 ```
+
 These methods will return a simple JSON boolean to indicate the result.
 
 ### Sending messages
 
 Messages can be sent to specific devices, or broadcasted to all devices:
+
 ```cfm
 <!--- Example 1: Broadcast a message to all your users --->
 <cfset application.pusher.broadcastMessage(message = "Hello to all my users!")/>
@@ -74,15 +77,23 @@ Messages can be sent to specific devices, or broadcasted to all devices:
 
 <!--- Example 3: Broadcast a message to a specific user with a badge counter update --->
 <cfset application.pusher.sendMessage(userID = 123, message = "Hello there!", badgeTotal = 3)/>
+
+<!--- Example 4: Broadcast a message to a specific user with custom data (Android only) --->
+<cfset customData = structNew()/>
+<cfset customData["score"] = 9001/>
+
+<cfset application.pusher.sendMessage(userID = 123, message = "Hello there!", data = customData/>
 ```
 
 ### Handling inactive devices
 
 Pusher automatically handles inactive Android devices since we get immediate feedback about the device status after sending a message. Apple push notifications do not work this way. To handle inactive Apple devices you need to call the 'handleInactiveAppleDevices' function. This will retrieve a list of all inactive devices from Apple and remove them from your device table:
+
 ```cfm
 <!--- Example: Clean inactive apple devices --->
 <cfset application.pusher.handleInactiveAppleDevices()/>
 ```
+
 Best practice would be to implement this in a scheduled task.
 
 Credits
