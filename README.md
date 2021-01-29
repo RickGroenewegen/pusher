@@ -107,7 +107,7 @@ If you have any questions, feel free to contact me.
 
 Rick Groenewegen
 
-rick@aanzee.nl
+west14@gmail.com
 
 
 
